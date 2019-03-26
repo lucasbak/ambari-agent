@@ -1,0 +1,36 @@
+---
+- name: Install ambari-agent
+  yum:
+    name={{item}}
+    state=installed
+    update_cache=yes
+  with_items:
+    - ambari-agent
+    - wget
+- name: Copy systemd service for ambari-agent
+  template:
+    src: ambari-agent.ini.j2
+    dest: /etc/ambari-agent/conf/ambari-agent.ini
+- name: Modify conf ambari-agent
+  lineinfile:
+    path: /etc/ambari-agent/conf/ambari-agent.ini
+    regexp: '^hostname='
+    line: 'hostname={{ ambari_server_master }}'
+- name: Copy systemd service for ambari-agent
+  template:
+    src: ambari-agent.service
+    dest: /lib/systemd/system/ambari-agent.service
+- name: Systemd reload
+  systemd: daemon_reload=yes
+- name: Disable chkconfig
+  command: chkconfig ambari-agent off
+- name: Enable service Ambari-agent
+  systemd:
+    enabled: yes
+    masked: no
+    name: ambari-agent.service
+- name: Restart service Ambari-agent
+  systemd:
+    state: restarted
+    name: ambari-agent
+    

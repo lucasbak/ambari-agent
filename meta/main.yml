@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  author: ymadoff
+  description: Setup an Ambari Agent
+  license: GPLv2
+  min_ansible_version: 1.2
+  platforms:
+  - name: EL
+    versions:
+    - 7
+  - name: Fedora
+    versions:
+    - all
+  categories:
+  - system
+dependencies: []

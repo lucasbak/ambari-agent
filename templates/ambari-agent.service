@@ -1,0 +1,9 @@
+[Unit]
+  Description=Ambari Agent
+  After=network.target
+  [Service]
+  Type=forking
+  ExecStart=/etc/rc.d/init.d/ambari-agent start
+  ExecStop=/etc/rc.d/init.d/ambari-agent stop
+  [Install]
+  WantedBy=multi-user.target
