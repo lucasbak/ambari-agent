@@ -1,2 +1,3 @@
 ambari_server_master: master1.habibiz
 ambari_agent_log_dir: /var/log/ambari-agent
+register_agent: False

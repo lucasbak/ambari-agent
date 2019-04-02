@@ -33,4 +33,7 @@
   systemd:
     state: restarted
     name: ambari-agent
+
+- include: register_agent.yml
+  when: register_agent is defined and register_agent
     
