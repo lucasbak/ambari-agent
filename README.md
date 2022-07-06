@@ -6,8 +6,7 @@ A simple role for setting up Apache Ambari Agent
 Requirements
 ------------
 
-JAVA
-MariaDB / PostgreSQL Database
+JAVA JDK 8
 
 Role Variables
 --------------
