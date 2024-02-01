@@ -1,12 +1,64 @@
 ---
-- name: Install ambari-agent
-  yum:
+- name: Copy Repo [APT]
+  copy:
+    src: "{{ item }}"
+    dest: /etc/apt/sources.list.d/
+  when: offline_apt_repos is defined and offline_apt_repos
+  with_fileglob:
+    - "{{source_repo_folder}}/*.list"
+
+- name: update apt cache
+  shell: 'apt update -y'
+  when: offline_apt_repos is defined and offline_apt_repos
+
+- name: Copy Repo [YUM]
+  copy:
+    src: "{{ item }}"
+    dest: /etc/yum.repos.d/
+  when: offline_yum_repos is defined and offline_yum_repos
+  with_fileglob:
+    - "{{source_repo_folder}}/*.repo"
+  when: offline_yum_repos is defined and offline_yum_repos
+
+- name: Ensure software is installed (yum)
+  yum: name="hdp-select" state=present update_cache=yes disable_gpg_check=yes
+  when: ambari_stack_name|lower != 'odp' and ansible_distribution != 'Ubuntu'
+
+- name: Ensure software is installed (yum)
+  yum: name="odp-select" state=present update_cache=yes disable_gpg_check=yes
+  when: ambari_stack_name|lower == 'odp' and ansible_distribution != 'Ubuntu'
+
+- name: Ensure software is installed (apt)
+  package: name="odp-select-{{stack_version_flattened}}" state=present
+  when: ambari_stack_name|lower == 'odp' and ansible_distribution == 'Ubuntu'
+
+- name: Ensure Hadoop Client software is installed (apt)
+  package: name="hadoop-{{stack_version_flattened}}-hdfs" state=present
+  when: ambari_stack_name|lower == 'odp' and ansible_distribution == 'Ubuntu'
+
+- name: Packages [redhat7/8]
+  package:
     name={{item}}
     state=installed
     update_cache=yes
   with_items:
     - ambari-agent
     - wget
+  when: (ansible_distribution != "Ubuntu")
+
+- name: Packages [ubuntu22]
+  package:
+    state: present
+    name: "{{item}}"
+    use: apt
+  with_items: 
+    - ambari-agent
+    - wget
+    - libmysqlclient21
+    - libmariadb3
+    - mysql-client
+  when: (ansible_distribution == "Ubuntu")
+
 - name: Copy systemd service for ambari-agent
   template:
     src: ambari-agent.ini.j2
@@ -20,10 +72,12 @@
   template:
     src: ambari-agent.service
     dest: /lib/systemd/system/ambari-agent.service
+  when: ansible_distribution != "Ubuntu"
 - name: Systemd reload
   systemd: daemon_reload=yes
 - name: Disable chkconfig
   command: chkconfig ambari-agent off
+  when: ansible_distribution != "Ubuntu"
 - name: Enable service Ambari-agent
   systemd:
     enabled: yes
