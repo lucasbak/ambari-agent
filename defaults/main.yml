@@ -3,3 +3,4 @@ ambari_agent_log_dir: /var/log/ambari-agent
 register_agent: False
 ambari_agent_no_file: 4096
 ambari_stack_name: ODP
+prepare_packages: True

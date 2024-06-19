@@ -27,19 +27,19 @@
 
 - name: Ensure software is installed (yum)
   yum: name="hdp-select" state=present update_cache=yes disable_gpg_check=yes
-  when: ambari_stack_name|lower != 'odp' and ansible_distribution != 'Ubuntu'
+  when: ambari_stack_name|lower != 'odp' and ansible_distribution != 'Ubuntu' and prepare_packages
 
 - name: Ensure software is installed (yum)
   yum: name="odp-select" state=present update_cache=yes disable_gpg_check=yes
-  when: ambari_stack_name|lower == 'odp' and ansible_distribution != 'Ubuntu'
+  when: ambari_stack_name|lower == 'odp' and ansible_distribution != 'Ubuntu' and prepare_packages
 
 - name: Ensure software is installed (apt)
   package: name="odp-select-{{stack_version_flattened}}" state=present
-  when: ambari_stack_name|lower == 'odp' and ansible_distribution == 'Ubuntu'
+  when: ambari_stack_name|lower == 'odp' and ansible_distribution == 'Ubuntu' and prepare_packages
 
 - name: Ensure Hadoop Client software is installed (apt)
   package: name="hadoop-{{stack_version_flattened}}-hdfs" state=present
-  when: ambari_stack_name|lower == 'odp' and ansible_distribution == 'Ubuntu'
+  when: ambari_stack_name|lower == 'odp' and ansible_distribution == 'Ubuntu' and prepare_packages
 
 - name: Packages [redhat7/8]
   package:
