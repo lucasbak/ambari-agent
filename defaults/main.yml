@@ -1,6 +1,7 @@
-ambari_server_master: master1.habibiz
+ambari_server_master: master01.hadoop
 ambari_agent_log_dir: /var/log/ambari-agent
 register_agent: False
-ambari_agent_no_file: 4096
+ambari_agent_no_file: 64000
 ambari_stack_name: ODP
+do_sudoers: True
 prepare_packages: True

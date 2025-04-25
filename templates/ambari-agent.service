@@ -1,10 +1,16 @@
 [Unit]
   Description=Ambari Agent
   After=network.target
-  [Service]
+
+[Service]
   Type=forking
+  PIDFile=/var/run/ambari-agent/ambari-agent.pid
+  {% if run_as_non_root_user is defined %}
+User={{ run_as_non_root_user }}
+  {% endif %}
   ExecStart=/usr/sbin/ambari-agent start
   ExecStop=/usr/sbin/ambari-agent stop
   LimitNOFILE={{ambari_agent_no_file}}
-  [Install]
+
+[Install]
   WantedBy=multi-user.target
