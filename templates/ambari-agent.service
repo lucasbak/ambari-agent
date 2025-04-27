@@ -4,9 +4,9 @@
 
 [Service]
   Type=forking
-  PIDFile=/var/run/ambari-agent/ambari-agent.pid
   {% if run_as_non_root_user is defined %}
-User={{ run_as_non_root_user }}
+  User={{ run_as_non_root_user }}
+  PIDFile=/var/run/ambari-agent/ambari-agent.pid
   {% endif %}
   ExecStart=/usr/sbin/ambari-agent start
   ExecStop=/usr/sbin/ambari-agent stop
