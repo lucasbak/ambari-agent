@@ -18,26 +18,6 @@
   when: run_as_non_root_user is defined and do_sudoers == True
 
 
-- name: fix env custom user
-  shell: chmod +x /var/lib/ambari-agent/ambari-env.sh
-  when: run_as_non_root_user is defined
-
-- name : change ownership
-  shell: chown -R {{ run_as_non_root_user }} /var/lib/ambari-agent
-  when: run_as_non_root_user is defined
-
-- name : change ownership
-  shell: chown -R {{ run_as_non_root_user }} /var/log/ambari-agent
-  when: run_as_non_root_user is defined
-
-- name : change ownership
-  shell: chown -R {{ run_as_non_root_user }} /var/run/ambari-agent
-  when: run_as_non_root_user is defined
-
-- name : change ownership
-  shell: chown -R {{ run_as_non_root_user }} /etc/ambari-agent
-  when: run_as_non_root_user is defined
-
 - name: Copy Repo [APT]
   copy:
     src: "{{ item }}"
@@ -103,6 +83,27 @@
     - mysql-client
   when: (ansible_distribution == "Ubuntu")
 
+
+- name: fix env custom user
+  shell: chmod +x /var/lib/ambari-agent/ambari-env.sh
+  when: run_as_non_root_user is defined
+
+- name : change ownership
+  shell: chown -R {{ run_as_non_root_user }} /var/lib/ambari-agent
+  when: run_as_non_root_user is defined
+
+- name : change ownership
+  shell: chown -R {{ run_as_non_root_user }} /var/log/ambari-agent
+  when: run_as_non_root_user is defined
+
+- name : change ownership
+  shell: chown -R {{ run_as_non_root_user }} /var/run/ambari-agent
+  when: run_as_non_root_user is defined
+
+- name : change ownership
+  shell: chown -R {{ run_as_non_root_user }} /etc/ambari-agent
+  when: run_as_non_root_user is defined
+
 - name: Copy systemd service for ambari-agent
   template:
     src: ambari-agent.ini.j2
@@ -142,16 +143,15 @@
 
 
 
-- name: Check if Ambari-agent service is running
-  systemd:
-    name: ambari-agent
-  register: ambari_service_status
+# - name: Check if Ambari-agent service is running
+#   systemd:
+#     name: ambari-agent
+#   register: ambari_service_status
 
 - name: Start service Ambari-agent if not running
   systemd:
-    state: started
+    state: restarted
     name: ambari-agent
-  when: ambari_service_status.status.ActiveState != "active"
 
 - name: Enable service Ambari-agent
   systemd:
