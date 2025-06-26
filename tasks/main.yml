@@ -104,7 +104,7 @@
   shell: chown -R {{ run_as_non_root_user }} /etc/ambari-agent
   when: run_as_non_root_user is defined
 
-- name: Copy systemd service for ambari-agent
+- name: Render configuration for ambari-agent
   template:
     src: ambari-agent.ini.j2
     dest: /etc/ambari-agent/conf/ambari-agent.ini
@@ -187,7 +187,7 @@
     - python39-devel
     - python39-libs
     - python39-lxml
-  when: ansible_distribution != "Ubuntu" and (ansible_distribution_major_version == '9' or ansible_distribution_major_version == '8')
+  when: ansible_distribution != "Ubuntu" and (ansible_distribution_major_version == '8')
 
 
 - name: Install packages based on distribution
